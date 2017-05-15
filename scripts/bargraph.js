@@ -1,16 +1,14 @@
 /*===========================================================*/
 // DATA RETRIEVAL METHOD WHERE 'data' REPRESENTS THE OBJECT
 /*===========================================================*/
+const url = `http://ckjacobson.com/maxicom/reports/flow/1.json`
 window.onload = function Maxicom () {
 
-  const url = `http://ckjacobson.com/maxicom/reports/flow/1.json`
 
   $.ajax({url: url}).done(function(mData) {
-    console.log('Hello. The returned object is:', mData)
+    console.log('The returned mData:', mData)
   })
-  // console.log('mData out of first parens', mData)
 }
-  // console.log('mData out of second parens', mData)
 /*===========================================================*/
 // NEXT
 /*===========================================================*/
@@ -52,65 +50,88 @@ var svg = d3.select("body").append("svg")
           "translate(" + margin.left + "," + margin.top + ")")
     console.log('svg:', svg)
 
-let data = {
-    "flow": [
-        {
-            "id": 1,
-            "report": "Flow",
-            "report_data": [
-                {
-                    "report_id": 1,
-                    "value": "80",
-                    "timestamp": "2016-04-01T21:00:00"
-                },
-                {
-                    "report_id": 1,
-                    "value": "75",
-                    "timestamp": "2016-04-01T21:01:00"
-                },
-                {
-                    "report_id": 1,
-                    "value": "30",
-                    "timestamp": "2016-04-01T21:02:00"
-                }
-            ]
-        }
-    ]
-}
-console.log('data:', data)
-let timestamp = data.flow[0].report_data[0].timestamp
-console.log('timestamp:', timestamp)
-let ts = new Date(timestamp)
-console.log('ts:', ts)
-let min = (ts.getMinutes() + ":00")
-console.log('min:', min)
-let Minutes = min
-console.log('Minutes:', Minutes)
-let gallons = data.flow[0].report_data[0].value
-console.log('gallons:', gallons)
+// let data = {
+//     "flow": [
+//         {
+//             "id": 1,
+//             "report": "Flow",
+//             "report_data": [
+//                 {
+//                     "report_id": 1,
+//                     "value": "80",
+//                     "timestamp": "2016-04-01T21:00:00"
+//                 },
+//                 {
+//                     "report_id": 1,
+//                     "value": "75",
+//                     "timestamp": "2016-04-01T21:01:00"
+//                 },
+//                 {
+//                     "report_id": 1,
+//                     "value": "30",
+//                     "timestamp": "2016-04-01T21:02:00"
+//                 }
+//             ]
+//         }
+//     ]
+// }
+// console.log('data:', data)
+// let timestamp = data.flow[0].report_data[0].timestamp
+// console.log('timestamp:', timestamp)
+// let ts = new Date(timestamp)
+// console.log('ts:', ts)
+// let min = (ts.getMinutes() + ":00")
+// console.log('min:', min)
+// let Minutes = min
+// console.log('Minutes:', Minutes)
+// let gallons = data.flow[0].report_data[0].value
+// console.log('gallons:', gallons)
 // let dataArr = data.flow[0]
 // console.log('dataArr:' dataArr)
+
+
+
+
+// let timestamp = data.flow[0].report_data[0].timestamp
+// let ts = new Date(timestamp)
+// let min = (ts.getMinutes() + ":00")
+// let Minutes = min
+
+
 /*===========================================================*/
 // load the data
-d3.json("obj.json", function(error, data) {
-console.log('inside d3.json function - obj.json:', data)
-let dataArr = data.flow[0].report_data;
-console.log('dataArr:', dataArr)
-dataArr.forEach(function(d) {
-  preMinutes = d
-  preGallons = d
-  // preMinutes = d.report_data.timestamp
-  // preGallons = d.report_data.value
-  console.log('d:', d)
-  console.log('preMinutes/timestamp:', preMinutes)
-  console.log('preGallons/value:', preGallons)
+d3.json(url, function(error, data) {
+  if (error) {
+    console.log('error:', error);
+  } else {
+    console.log('data:', data);
+  }
+
+  console.log('inside url function - url', data)
+  let dataArr = data.flow[0].report_data;
+  console.log('dataArr:', dataArr)
+
+  // let timestamp = dataArr.timestamp
+  // let ts = new Date(timestamp)
+  // let min = (ts.getMinutes() + ":00")
+
+  dataArr.forEach(function(d) {
+    gallons = d.value;
+      let timestamp = d.timestamp
+      let ts = new Date(timestamp)
+      let min = (ts.getMinutes() + ":00")
+    minutes = min;
+    console.log('gallons/value:', gallons)
+    console.log('minutes/timestamp++:', minutes)
+  })
+
 
         // Minutes = Minutes
         // Gallons = +gallons
         // console.log('Minutes:', Minutes)
         // console.log('Gallons', Gallons)
 
-    })
+})
 
   // scale the range of the data
   // x.domain(data.map(function(d) { return d.Letter }))
@@ -193,4 +214,4 @@ dataArr.forEach(function(d) {
 //       .attr("y", function(d) { return y(Gallons) })
 //       .attr("height", function(d) { return height - y(Gallons) })
 //
-    })
+    // })
