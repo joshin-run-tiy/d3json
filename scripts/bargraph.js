@@ -16,7 +16,7 @@ window.onload = function Maxicom () {
 console.log('hello steve')
 // set the dimensions of the canvas
 var margin = {top: 20, right: 20, bottom: 70, left: 40},
-    width = 400 - margin.left - margin.right,
+    width = 600 - margin.left - margin.right,
     height = 300 - margin.top - margin.bottom
     console.log('margin:', margin)
     console.log('width:', width)
@@ -99,6 +99,8 @@ var svg = d3.select("body").append("svg")
 
 
 /*===========================================================*/
+
+
 // load the data
 d3.json(url, function(error, data) {
   if (error) {
@@ -108,14 +110,10 @@ d3.json(url, function(error, data) {
   }
 
   console.log('inside url function - url', data)
-  let dataArr = data.flow[0].report_data;
-  console.log('dataArr:', dataArr)
+  data = data.flow[0].report_data;
+  console.log('data:', data)
 
-  // let timestamp = dataArr.timestamp
-  // let ts = new Date(timestamp)
-  // let min = (ts.getMinutes() + ":00")
-
-  dataArr.forEach(function(d) {
+  data.forEach(function(d) {
     gallons = d.value;
       let timestamp = d.timestamp
       let ts = new Date(timestamp)
@@ -125,93 +123,51 @@ d3.json(url, function(error, data) {
     console.log('minutes/timestamp++:', minutes)
   })
 
-
-        // Minutes = Minutes
-        // Gallons = +gallons
-        // console.log('Minutes:', Minutes)
-        // console.log('Gallons', Gallons)
-
-})
-
   // scale the range of the data
-  // x.domain(data.map(function(d) { return d.Letter }))
-  // y.domain([0, d3.max(data, function(d) { return d.Freq })])
-/*===========================================================*/
-    // d3.json("./obj.json", function(error, data) {
-    //       console.log('hello world')
-    //         let timestamp = data.flow[0].report_data[0].timestamp
-    //         let ts = new Date(timestamp)
-    //         let min = (ts.getMinutes() + ":00")
-    //         let Minutes = min
-    //         let gallons = data.flow[0].report_data[0].value
-    //
-    //
-    //         data.forEach(function(d) {
-    //             Minute = min
-    //             Gallons = +gallons
-    //
+  x.domain(data.map(function(d) {
+  let timestamp = d.timestamp
+  let ts = new Date(timestamp)
+  let min = (ts.getMinutes() + ":00")
+  minutes = min;
+  console.log('minutes - x.domain:', minutes);
+  return minutes
+  }))
+  y.domain([0, d3.max(data, function(d) {
+  let gallons = d.value;
+  console.log('gallons - y.domain', gallons);
+  return gallons
+ })])
+
+  // add axis
+  svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis)
+    .selectAll("text")
+      .style("text-anchor", "end")
+      .attr("dx", "-.8em")
+      .attr("dy", "-.55em")
+      .attr("transform", "rotate(-45)")
+
+  svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+    .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 5)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text("Gallons")
 
 
-// load the data
-// d3.json("obj.json", function(error, data) {
-//     data.forEach(function(d) {
-//         d.Letter = d.Letter
-//         d.Freq = +d.Freq
-//     })
-//     console.log('hello dev')
-//===================
-//     d3.json("./obj.json", function(error, data) {
-//       console.log('hello world')
-//         let timestamp = data.flow[0].report_data[0].timestamp
-//         let ts = new Date(timestamp)
-//         let min = (ts.getMinutes() + ":00")
-//         let Minutes = min
-//         let gallons = data.flow[0].report_data[0].value
-//
-//
-//         data.forEach(function(d) {
-//             Minute = min
-//             Gallons = +gallons
-//===================
-//
-//       // scale the range of the data
-//       xScale.domain(data.map(function(d) { return Minutes }))
-//       yScale.domain([0, d3.max(data, function(d) { return Gallons })])
-//   // scale the range of the data
-//   // x.domain(data.map(function(d) { return d.Letter }))
-//   // y.domain([0, d3.max(data, function(d) { return d.Freq })])
-//
-//   // add axis
-//   svg.append("g")
-//       .attr("class", "x axis")
-//       .attr("transform", "translate(0," + height + ")")
-//       .call(xAxis)
-//     .selectAll("text")
-//       .style("text-anchor", "end")
-//       .attr("dx", "-.8em")
-//       .attr("dy", "-.55em")
-//       .attr("transform", "rotate(-90)" )
-//       .text("Minutes")
-//
-//   svg.append("g")
-//       .attr("class", "y axis")
-//       .call(yAxis)
-//     .append("text")
-//       .attr("transform", "rotate(-90)")
-//       .attr("y", 5)
-//       .attr("dy", ".71em")
-//       .style("text-anchor", "end")
-//       .text("Gallons")
-//
-//
-//   // Add bar chart
-//   svg.selectAll("bar")
-//       .data(data)
-//     .enter().append("rect")
-//       .attr("class", "bar")
-//       .attr("x", function(d) { return x(Minutes) })
-//       .attr("width", x.rangeBand())
-//       .attr("y", function(d) { return y(Gallons) })
-//       .attr("height", function(d) { return height - y(Gallons) })
-//
-    // })
+  // Add bar chart
+  svg.selectAll("bar")
+      .data(data)
+    .enter().append("rect")
+      .attr("class", "bar")
+      .attr("x", function(d) { return x(minutes) })
+      .attr("width", x.rangeBand())
+      .attr("y", function(d) { return y(gallons) })
+      .attr("height", function(d) { return height - y(gallons) })
+
+    })
