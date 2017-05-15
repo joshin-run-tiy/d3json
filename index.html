@@ -38,92 +38,146 @@ svg {
 /*===========================================================*/
 // DATA RETRIEVAL METHOD WHERE 'data' REPRESENTS THE OBJECT
 /*===========================================================*/
-window.onload = function Maxicom () {
+// window.onload = function Maxicom () {
+//
+//   const url = `http://ckjacobson.com/maxicom/reports/flow/1.json`;
+//
+//   $.ajax({ url: url }).done(function(data) {
+//   console.log('taha! data:', data);
+/*===========================================================*/
+// END
+/*===========================================================*/
+/*========================*/
+// LOCAL DATA
+/*========================*/
+let localData = {
+    "flow": [
+        {
+            "id": 1,
+            "report": "Flow",
+            "report_data": [
+                {
+                    "report_id": 1,
+                    "value": "80",
+                    "timestamp": "2016-04-01T21:00:00"
+                },
+                {
+                    "report_id": 1,
+                    "value": "75",
+                    "timestamp": "2016-04-01T21:01:00"
+                },
+                {
+                    "report_id": 1,
+                    "value": "30",
+                    "timestamp": "2016-04-01T21:02:00"
+                }
+            ]
+        }
+    ]
+}
+/*========================*/
+// END
+/*========================*/
+// set the dimensions of the canvas
+var margin = {top: 20, right: 20, bottom: 70, left: 40},
+    width = 600 - margin.left - margin.right,
+    height = 300 - margin.top - margin.bottom;
 
-  const url = `http://ckjacobson.com/maxicom/reports/flow/1.json`;
+//==
 
-  $.ajax({ url: url }).done(function(data) {
-  console.log('taha! data:', data);
-  /*===========================================================*/
-  // NEXT
-  /*===========================================================*/
-  // set the dimensions of the canvas
-  var margin = {top: 20, right: 20, bottom: 70, left: 40},
-      width = 600 - margin.left - margin.right,
-      height = 300 - margin.top - margin.bottom;
+// set the ranges
+var xScale = d3.scale.ordinal().rangeRoundBands([0, width], .05);
+var yScale = d3.scale.linear().range([height, 0]);
 
+//==
 
-  // set the ranges
-  var x = d3.scale.ordinal().rangeRoundBands([0, width], .05);
-  var y = d3.scale.linear().range([height, 0]);
+// define the axis
+var xAxis = d3.svg.axis()
+    .scale(xScale)
+    .orient("bottom")
 
-  // define the axis
-  var xAxis = d3.svg.axis()
-      .scale(x)
-      .orient("bottom")
+//==
 
+var yAxis = d3.svg.axis()
+    .scale(yScale)
+    .orient("left")
+    .ticks(10);
 
-  var yAxis = d3.svg.axis()
-      .scale(y)
-      .orient("left")
-      .ticks(10);
+//==
 
-
-  // add the SVG element
-  var svg = d3.select("body").append("svg")
-      .attr("width", width + margin.left + margin.right)
-      .attr("height", height + margin.top + margin.bottom)
+// add the SVG element
+var svg = d3.select("body").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
     .append("g")
-      .attr("transform",
-            "translate(" + margin.left + "," + margin.top + ")");
+    .attr("transform",
+          "translate(" + margin.left + "," + margin.top + ")");
+
+//==
+
+// load the data
+d3.json("obj.json", function(error, data) {
+    let timestamp = data.flow[0].report_data[0].timestamp;
+    let ts = new Date(timestamp)
+    let min = (ts.getMinutes() + ":00");
+    let gallons = data.data.flow[0].report_data[0].value;
+    data.forEach(function(d) {
+        Minute = min
+        Gallons = +gallons;
+    });
+
+  // scale the range of the data
+  xScale.domain(data.map(function(d) { return Minute; }));
+  yScale.domain([0, d3.max(data, function(d) { return Gallons; })]);
+/*===========================================================*/
+// EXAMPLE: DATA STORED IN A VARIABLE
+/*===========================================================*/
+  var w = 1600;
+  var h = 500;
+
+  var dataset = {key: [1, 2, 3, 4, 5], value: [10,20,30,40,50]};
+
+  var xScale = d3.scale.ordinal()
+          .domain(d3.range(dataset.value.length))
+          .rangeRoundBands([0, w], 0.05);
+
+  var yScale = d3.scale.linear()
+          .domain([0, d3.max(dataset.value)])
+          .range([0, h-100]);
+/*===========================================================*/
+// DATA RETRIEVAL METHOD WHERE 'data' REPRESENTS THE OBJECT
+/*===========================================================*/
+  // add axis
+  svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis)
+    .selectAll("text")
+      .style("text-anchor", "end")
+      .attr("dx", "-.8em")
+      .attr("dy", "-.55em")
+      .attr("transform", "rotate(-90)" );
+
+  svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+    .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 5)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text("Frequency");
 
 
-  // load the data
-  d3.json("obj.json", function(error, data) {
-      let timestamp = data.flow[0].report_data[0].timestamp;
-      let ts = new Date(timestamp)
-      let min = (ts.getMinutes() + ":00");
-      let gallons = data.data.flow[0].report_data[0].value;
-      data.forEach(function(d) {
-          Minute = min
-          Gallons = +gallons;
-      });
-
-    // scale the range of the data
-    x.domain(data.map(function(d) { return Minute; }));
-    y.domain([0, d3.max(data, function(d) { return Gallons; })]);
-
-    // add axis
-    svg.append("g")
-        .attr("class", "x axis")
-        .attr("transform", "translate(0," + height + ")")
-        .call(xAxis)
-      .selectAll("text")
-        .style("text-anchor", "end")
-        .attr("dx", "-.8em")
-        .attr("dy", "-.55em")
-        .attr("transform", "rotate(-90)" );
-
-    svg.append("g")
-        .attr("class", "y axis")
-        .call(yAxis)
-      .append("text")
-        .attr("transform", "rotate(-90)")
-        .attr("y", 5)
-        .attr("dy", ".71em")
-        .style("text-anchor", "end")
-        .text("Frequency");
-
-
-    // Add bar chart
-    svg.selectAll("bar")
-        .data(data)
-      .enter().append("rect")
-        .attr("class", "bar")
-        .attr("x", function(d) { return x(d.Letter); })
-        .attr("width", x.rangeBand())
-        .attr("y", function(d) { return y(d.Freq); })
-        .attr("height", function(d) { return height - y(d.Freq); });
+  // Add bar chart
+  svg.selectAll("bar")
+      .data(data)
+    .enter().append("rect")
+      .attr("class", "bar")
+      .attr("x", function(d) { return xScale(d.Letter); })
+      .attr("width", xScale.rangeBand())
+      .attr("y", function(d) { return yScale(d.Freq); })
+      .attr("height", function(d) { return height - yScale(d.Freq); });
 
   })
 }
