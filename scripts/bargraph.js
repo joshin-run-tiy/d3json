@@ -102,7 +102,8 @@ var svg = d3.select("body").append("svg")
 
 
 // load the data
-d3.json(url, function(error, data) {
+d3.json("flow.json", function(error, data) {
+// d3.json(url, function(error, data) {
   if (error) {
     console.log('error:', error);
   } else {
@@ -114,28 +115,39 @@ d3.json(url, function(error, data) {
   console.log('data:', data)
 
   data.forEach(function(d) {
-    gallons = d.value;
-      let timestamp = d.timestamp
-      let ts = new Date(timestamp)
-      let min = (ts.getMinutes() + ":00")
-    minutes = min;
-    console.log('gallons/value:', gallons)
-    console.log('minutes/timestamp++:', minutes)
+    d.value = +d.value;
+    d.timestamp = new Date(d.timestamp)
+    d.timestamp = (d.timestamp.getMinutes() + ":00")
+    d.timestamp = d.timestamp;
+    console.log('d.timestamp forEach', d.timestamp);
+      // let timestamp = d.timestamp
+      // let ts = new Date(timestamp)
+      // let min = (ts.getMinutes() + ":00")
+    // console.log('gallons/value:', gallons)
+    // console.log('minutes/timestamp++:', minutes)
   })
+
+  // let timestamp = d.timestamp
+  // let ts = new Date(d.timestamp)
+  // let min = (ts.getMinutes() + ":00")
+  // minutes = min;
+  // console.log('minutes - x.domain:', minutes);
 
   // scale the range of the data
   x.domain(data.map(function(d) {
-  let timestamp = d.timestamp
-  let ts = new Date(timestamp)
-  let min = (ts.getMinutes() + ":00")
-  minutes = min;
-  console.log('minutes - x.domain:', minutes);
-  return minutes
+  // let timestamp = d.timestamp
+  // let ts = new Date(timestamp)
+  // let min = (ts.getMinutes() + ":00")
+  // minutes = min;
+  // console.log('minutes - x.domain:', minutes);
+  // return minutes
+  return d.timestamp
   }))
   y.domain([0, d3.max(data, function(d) {
-  let gallons = d.value;
-  console.log('gallons - y.domain', gallons);
-  return gallons
+  // let gallons = d.value;
+  // console.log('gallons - y.domain', gallons);
+  // return gallons
+  return d.value
  })])
 
   // add axis
@@ -165,9 +177,11 @@ d3.json(url, function(error, data) {
       .data(data)
     .enter().append("rect")
       .attr("class", "bar")
-      .attr("x", function(d) { return x(minutes) })
+      .attr("x", function(d) { return x(d.timestamp) })
       .attr("width", x.rangeBand())
-      .attr("y", function(d) { return y(gallons) })
-      .attr("height", function(d) { return height - y(gallons) })
+      // .attr("y", function(d) { return y(gallons) })
+      // .attr("height", function(d) { return height - y(gallons) })
+      .attr("y", function(d) { return y(d.value) })
+      .attr("height", function(d) { return height - y(d.value) })
 
     })
