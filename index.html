@@ -116,7 +116,7 @@ var svg = d3.select("body").append("svg")
 //==
 
 // load the data
-d3.json("obj.json", function(error, data) {
+d3.json(url, function(error, data) {
     let timestamp = data.flow[0].report_data[0].timestamp;
     let ts = new Date(timestamp)
     let min = (ts.getMinutes() + ":00");

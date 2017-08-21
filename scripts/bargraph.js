@@ -19,9 +19,9 @@ var margin = {top: 20, right: 20, bottom: 70, left: 40},
     height = 300 - margin.top - margin.bottom
 
 // set the ranges
-var x = d3.scale.ordinal().rangeRoundBands([0, width], .08)
+var x = d3.scale.ordinal().rangeRoundBands([0, width], .09)
 var y = d3.scale.linear().range([height, 0])
-
+console.log(x,y);
 // define the axis
 var xAxis = d3.svg.axis()
     .scale(x)
@@ -41,7 +41,8 @@ var svg = d3.select("body").append("svg")
           "translate(" + margin.left + "," + margin.top + ")")
 
 // load the data
-d3.json("flow.json", function(error, data) {
+d3.json(url, function(error, data) {
+// d3.json("flow.json", function(error, data) {
   if (error) {
   } else {
   }
